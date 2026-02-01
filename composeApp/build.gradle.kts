@@ -1,18 +1,17 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.androidLibrary)  // ← application이 아니라 library!
     alias(libs.plugins.composeCompiler)
+    id("maven-publish")  // ← 이거 꼭 추가
 }
+
+group = "com.github.Joojinsung1017"
+version = "1.0.0"
 
 kotlin {
     androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
+        publishLibraryVariants("release", "debug")
     }
 
     listOf(
@@ -51,11 +50,7 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.my.demo"
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
     }
     packaging {
         resources {
@@ -68,8 +63,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
@@ -77,3 +72,12 @@ dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
 
+publishing {
+    publications {
+        create<MavenPublication>("release") {
+            groupId = "com.github.Joojinsung1017"
+            artifactId = "test-Library"
+            version = "1.0.0"
+        }
+    }
+}
